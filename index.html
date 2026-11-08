@@ -16,7 +16,8 @@
     <div class="bg-gray-900 text-gray-300 text-sm py-2">
         <div class="container mx-auto px-4 flex justify-between items-center">
             <div class="font-light">ថ្ងៃអាទិត្យ ទី៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦</div>
-            <div class="flex space-x-4">
+            <div class="flex space-x-4 items-center">
+                <a href="tel:0883473358" class="text-yellow-400 font-bold hover:underline">📞 0883473358</a>
                 <a href="#" class="hover:text-white">អំពីយើង</a>
                 <a href="#" class="hover:text-white">ទំនាក់ទំនង</a>
             </div>
@@ -44,6 +45,15 @@
         </div>
     </nav>
 
+    <!-- Scrolling Text (អក្សររត់) -->
+    <div class="bg-yellow-400 text-gray-900 font-bold py-2 overflow-hidden shadow-inner">
+        <div class="container mx-auto px-4">
+            <marquee behavior="scroll" direction="left" scrollamount="5" class="text-sm md:text-base">
+                សូមស្វាគមន៍មកកាន់ គេហទំព័រស្ទឹងលាភ (STEUNGLEAP) - ព័ត៌មានទាន់ហេតុការណ៍ និងត្រឹមត្រូវ!
+            </marquee>
+        </div>
+    </div>
+
     <!-- Main Content Area -->
     <main class="container mx-auto px-4 py-6">
         <h2 class="text-xl font-bold mb-4 border-l-4 border-red-600 pl-3">ព័ត៌មានដែលបានចុះផ្សាយ</h2>
@@ -53,7 +63,8 @@
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-gray-400 mt-12 py-8">
-        <div class="container mx-auto px-4 text-center text-sm">
+        <div class="container mx-auto px-4 text-center text-sm space-y-2">
+            <p>លេខទូរសព្ទទំនាក់ទំនង: <a href="tel:0883473358" class="text-yellow-400 font-bold hover:underline">0883473358</a></p>
             <p>&copy; ២០២៦ STEUNGLEAP។ រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
         </div>
     </footer>
@@ -91,9 +102,12 @@
                 container.innerHTML = '';
                 querySnapshot.forEach((doc) => {
                     const item = doc.data();
+                    const imagesArr = item.images || (item.image ? [item.image] : []);
+                    const firstImage = imagesArr[0] || '';
+
                     container.innerHTML += `
                         <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col border border-gray-200">
-                            <img src="${item.image}" alt="News" class="w-full h-40 object-cover">
+                            <img src="${firstImage}" alt="News" class="w-full h-40 object-cover">
                             <div class="p-4 flex flex-col flex-grow">
                                 <h3 class="font-bold text-base mb-2 hover:text-red-600 cursor-pointer">${item.title}</h3>
                                 <p class="text-gray-600 text-xs mb-4 flex-grow">${item.desc}</p>
@@ -103,7 +117,7 @@
                     `;
                 });
             } catch (error) {
-                container.innerHTML = '<p class="text-red-500 col-span-4 text-center py-8">មានបញ្ហាក្នុងការភ្ជាប់ទិន្នន័យ សូមត្រួតពិនិត្យ Firestore Database Rules។</p>';
+                container.innerHTML = '<p class="text-red-500 col-span-4 text-center py-8">មានបញ្ហាក្នុងការភ្ជាប់ទិន្នន័យ។</p>';
             }
         }
 
