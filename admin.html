@@ -34,8 +34,9 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">ជ្រើសរើសរូបភាពព័ត៌មាន (អាចជ្រើសរើសច្រើនសន្លឹក)</label>
+                    <label class="block text-xs text-gray-300 mb-1">ជ្រើសរើសរូបភាពព័ត៌មាន</label>
                     <input type="file" id="a-image" accept="image/*" multiple class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-yellow-500 file:text-gray-900 hover:file:bg-yellow-400">
+                    <p class="text-xs text-gray-400 mt-1">*អាចជ្រើសរើសរូបភាពច្រើនសន្លឹក (ប្រព័ន្ធនឹងបង្រួមទំហំស្វ័យប្រវត្តិដើម្បីកុំឱ្យជាប់ error)</p>
                 </div>
 
                 <div>
@@ -61,7 +62,7 @@
     <!-- Firebase SDK & Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCj8Fz-LyCydPLVz2F2z80NyyA-1JJnoIA",
@@ -75,7 +76,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        function compressImage(file, maxWidth = 800, quality = 0.7) {
+        // ฟังก์ชันបង្រួមទំហំរូបភាពការពារកុំឱ្យហួសកម្រិត Firestore
+        function compressImage(file, maxWidth = 600, quality = 0.6) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -117,7 +119,8 @@
                 querySnapshot.forEach((document) => {
                     const item = document.data();
                     const id = document.id;
-                    const firstImage = Array.isArray(item.images) ? item.images[0] : item.image;
+                    const imagesArr = item.images || (item.image ? [item.image] : []);
+                    const firstImage = imagesArr[0] || '';
 
                     listContainer.innerHTML += `
                         <div class="bg-gray-700 p-4 rounded flex justify-between items-center border border-gray-600">
@@ -126,7 +129,7 @@
                                 <div class="truncate">
                                     <h4 class="font-bold text-sm text-yellow-200 truncate">${item.title}</h4>
                                     <p class="text-xs text-gray-300 line-clamp-1">${item.desc}</p>
-                                    <span class="text-[10px] text-gray-400">${item.date}</span>
+                                    <span class="text-[10px] text-gray-400">${item.date} (រូបភាពចំនួន: ${imagesArr.length})</span>
                                 </div>
                             </div>
                             <div class="flex space-x-2 flex-shrink-0 ml-4">
@@ -151,7 +154,7 @@
             const submitBtn = document.getElementById('submit-btn');
 
             submitBtn.disabled = true;
-            submitBtn.innerText = "កំពុងដំណើរការ...";
+            submitBtn.innerText = "កំពុងបង្រួមនិងបង្ហោះរូបភាព...";
 
             try {
                 let imageUrls = submitBtn.dataset.currentImages ? JSON.parse(submitBtn.dataset.currentImages) : [];
@@ -169,7 +172,7 @@
                         title: title,
                         desc: desc,
                         images: imageUrls,
-                        image: imageUrls[0] // សម្រាប់backward compatibility
+                        image: imageUrls[0] || ""
                     });
                     alert("បានកែប្រែព័ត៌មានដោយជោគជ័យ!");
                 } else {
@@ -196,6 +199,7 @@
                 alert("មានបញ្ហា៖ " + error.message);
             } finally {
                 submitBtn.disabled = false;
+                submitBtn.innerText = "ចុះផ្សាយព័ត៌មានឥឡូវនេះ";
             }
         });
 
@@ -217,7 +221,7 @@
                     alert("បានលុបដោយជោគជ័យ!");
                     fetchAdminNews();
                 } catch (error) {
-                    alert("មានបញ្ហាក្នុងការលុប៖ " + error.message);
+                    alert("មានបញ្ហាក្នុងการលុប៖ " + error.message);
                 }
             }
         }
