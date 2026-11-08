@@ -33,25 +33,10 @@
                     <input type="text" id="a-title" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="វាយបញ្ចូលឈ្មោះព័ត៌មាន...">
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- ប្រភេទព័ត៌មាន -->
-                    <div>
-                        <label class="block text-xs text-gray-300 mb-1">ប្រភេទព័ត៌មាន (Category)</label>
-                        <select id="a-category" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400">
-                            <option value="នយោបាយ">នយោបាយ</option>
-                            <option value="សង្គម">សង្គម</option>
-                            <option value="សេដ្ឋកិច្ច">សេដ្ឋកិច្ច</option>
-                            <option value="បច្ចេកវិទ្យា">បច្ចេកវិទ្យា</option>
-                            <option value="អន្តរជាតិ">អន្តរជាតិ</option>
-                            <option value="កីឡា">កីឡា</option>
-                            <option value="កម្សាន្ត">កម្សាន្ត</option>
-                        </select>
-                    </div>
-                    <!-- ជ្រើសរើសរូបភាពពីម៉ាស៊ីន (មិនបាច់ដាក់ Link) -->
-                    <div>
-                        <label class="block text-xs text-gray-300 mb-1">ជ្រើសរើសរូបភាពព័ត៌មាន</label>
-                        <input type="file" id="a-image" accept="image/*" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-yellow-500 file:text-gray-900 hover:file:bg-yellow-400">
-                    </div>
+                <!-- ជ្រើសរើសរូបភាពពីម៉ាស៊ីន -->
+                <div>
+                    <label class="block text-xs text-gray-300 mb-1">ជ្រើសរើសរូបភាពព័ត៌មាន</label>
+                    <input type="file" id="a-image" accept="image/*" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-yellow-500 file:text-gray-900 hover:file:bg-yellow-400">
                 </div>
 
                 <!-- អក្សរព័ត៌មាន (ខ្លឹមសារលម្អិត) -->
@@ -70,7 +55,6 @@
             event.preventDefault();
             
             const title = document.getElementById('a-title').value;
-            const category = document.getElementById('a-category').value;
             const desc = document.getElementById('a-desc').value;
             const date = '៨ វិច្ឆិកា ២០២៦';
             const imageFile = document.getElementById('a-image').files[0];
@@ -79,7 +63,7 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const image = e.target.result;
-                    const newItem = { title, category, image, desc, date };
+                    const newItem = { title, image, desc, date };
 
                     let newsList = JSON.parse(localStorage.getItem('steungleap_news')) || [];
                     newsList.unshift(newItem);
@@ -94,4 +78,3 @@
     </script>
 </body>
 </html>
-```[cite: 3]
