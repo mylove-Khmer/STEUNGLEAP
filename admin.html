@@ -15,7 +15,6 @@
     <!-- Admin Header -->
     <header class="bg-gray-900 shadow py-4 px-6 flex justify-between items-center border-b border-gray-700">
         <div class="flex items-center space-x-3">
-            <!-- ត្រង់កន្លែង logo.png សូមដាក់ឈ្មោះហ្វាល ឬ URL ឡូហ្គោរបស់អ្នក -->
             <img src="logo.png" alt="Logo" class="h-8 w-auto object-contain">
             <h1 class="text-xl font-bold text-yellow-400">ផ្ទាំងគ្រប់គ្រងអែតមីន (Admin Panel)</h1>
         </div>
@@ -25,15 +24,19 @@
     <!-- Admin Form Content -->
     <main class="container mx-auto px-4 py-8 max-w-xl">
         <div class="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
-            <h2 class="text-lg font-bold mb-4 text-yellow-300">បញ្ចូលអត្ថបទព័ត៌មានថ្មី</h2>
+            <h2 class="text-lg font-bold mb-4 text-yellow-300">បញ្ចូលព័ត៌មានថ្មី</h2>
             <form id="admin-news-form" onsubmit="publishNews(event)" class="space-y-4">
+                
+                <!-- ឈ្មោះព័ត៌មាន (ចំណងជើង) -->
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">ចំណងជើងព័ត៌មាន</label>
-                    <input type="text" id="a-title" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="ចំណងជើង...">
+                    <label class="block text-xs text-gray-300 mb-1">ឈ្មោះព័ត៌មាន (ចំណងជើង)</label>
+                    <input type="text" id="a-title" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="វាយបញ្ចូលឈ្មោះព័ត៌មាន...">
                 </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- ប្រភេទព័ត៌មាន -->
                     <div>
-                        <label class="block text-xs text-gray-300 mb-1">ប្រភេទព័ត៌មាន</label>
+                        <label class="block text-xs text-gray-300 mb-1">ប្រភេទព័ត៌មាន (Category)</label>
                         <select id="a-category" class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400">
                             <option value="នយោបាយ">នយោបាយ</option>
                             <option value="សង្គម">សង្គម</option>
@@ -44,16 +47,20 @@
                             <option value="កម្សាន្ត">កម្សាន្ត</option>
                         </select>
                     </div>
+                    <!-- រូបភាពព័ត៌មាន (Image URL) -->
                     <div>
-                        <label class="block text-xs text-gray-300 mb-1">តំណភ្ជាប់រូបភាព (Image URL)</label>
-                        <input type="url" id="a-image" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="https://...">
+                        <label class="block text-xs text-gray-300 mb-1">តំណភ្ជាប់រូបភាពព័ត៌មាន (Image URL)</label>
+                        <input type="url" id="a-image" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="https://example.com/image.jpg">
                     </div>
                 </div>
+
+                <!-- អក្សរព័ត៌មាន (អត្ថបទខ្លឹមសារ) -->
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">សេចក្តីលម្អិតខ្លីៗ</label>
-                    <textarea id="a-desc" rows="4" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="ខ្លឹមសារសង្ខេប..."></textarea>
+                    <label class="block text-xs text-gray-300 mb-1">អក្សរព័ត៌មាន (ខ្លឹមសារលម្អិត)</label>
+                    <textarea id="a-desc" rows="5" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="សរសេរអក្សរព័ត៌មាន ឬខ្លឹមសារនៅទីនេះ..."></textarea>
                 </div>
-                <button type="submit" class="w-full bg-yellow-500 text-gray-900 font-bold py-2 rounded text-sm hover:bg-yellow-400 transition">ចុះផ្សាយព័ត៌មាន</button>
+
+                <button type="submit" class="w-full bg-yellow-500 text-gray-900 font-bold py-2 rounded text-sm hover:bg-yellow-400 transition">ចុះផ្សាយព័ត៌មានឥឡូវនេះ</button>
             </form>
         </div>
     </main>
