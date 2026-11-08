@@ -47,16 +47,16 @@
                             <option value="កម្សាន្ត">កម្សាន្ត</option>
                         </select>
                     </div>
-                    <!-- រូបភាពព័ត៌មាន (Image URL) -->
+                    <!-- ជ្រើសរើសរូបភាពពីម៉ាស៊ីន (មិនបាច់ដាក់ Link) -->
                     <div>
-                        <label class="block text-xs text-gray-300 mb-1">តំណភ្ជាប់រូបភាពព័ត៌មាន (Image URL)</label>
-                        <input type="url" id="a-image" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="https://example.com/image.jpg">
+                        <label class="block text-xs text-gray-300 mb-1">ជ្រើសរើសរូបភាពព័ត៌មាន</label>
+                        <input type="file" id="a-image" accept="image/*" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-yellow-500 file:text-gray-900 hover:file:bg-yellow-400">
                     </div>
                 </div>
 
-                <!-- អក្សរព័ត៌មាន (អត្ថបទខ្លឹមសារ) -->
+                <!-- អក្សរព័ត៌មាន (ខ្លឹមសារលម្អិត) -->
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">អក្សរព័ត៌មាន (ខ្លឹមសារលម្អិត)</label>
+                    <label class="block text-xs text-gray-300 mb-1">អក្សរព័ត៌មាន (ខ្លឹមសារ)</label>
                     <textarea id="a-desc" rows="5" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="សរសេរអក្សរព័ត៌មាន ឬខ្លឹមសារនៅទីនេះ..."></textarea>
                 </div>
 
@@ -71,19 +71,27 @@
             
             const title = document.getElementById('a-title').value;
             const category = document.getElementById('a-category').value;
-            const image = document.getElementById('a-image').value;
             const desc = document.getElementById('a-desc').value;
             const date = '៨ វិច្ឆិកា ២០២៦';
+            const imageFile = document.getElementById('a-image').files[0];
 
-            const newItem = { title, category, image, desc, date };
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const image = e.target.result;
+                    const newItem = { title, category, image, desc, date };
 
-            let newsList = JSON.parse(localStorage.getItem('steungleap_news')) || [];
-            newsList.unshift(newItem);
-            localStorage.setItem('steungleap_news', JSON.stringify(newsList));
+                    let newsList = JSON.parse(localStorage.getItem('steungleap_news')) || [];
+                    newsList.unshift(newItem);
+                    localStorage.setItem('steungleap_news', JSON.stringify(newsList));
 
-            alert("ព័ត៌មានត្រូវបានចុះផ្សាយដោយជោគជ័យ!");
-            document.getElementById('admin-news-form').reset();
+                    alert("ព័ត៌មានត្រូវបានចុះផ្សាយដោយជោគជ័យ!");
+                    document.getElementById('admin-news-form').reset();
+                };
+                reader.readAsDataURL(imageFile);
+            }
         }
     </script>
 </body>
 </html>
+```[cite: 3]
