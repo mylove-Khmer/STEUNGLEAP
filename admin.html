@@ -33,7 +33,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">ជ្រើសរើសរូបភាពព័ត៌មាន</label>
+                    <label class="block text-xs text-gray-300 mb-1">ជ្រើសរើសរូបភាពព័ត៌មាន (អាចដាក់បាន)</label>
                     <input type="file" id="a-image" accept="image/*" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-yellow-500 file:text-gray-900 hover:file:bg-yellow-400">
                 </div>
 
@@ -64,6 +64,37 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // ฟังก์ชันបង្រួមទំហំរូបភាព (Resize Image) ដើម្បីកុំឱ្យធំពេក
+        function compressImage(file, maxWidth = 800, quality = 0.7) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = error => reject(error);
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+
         document.getElementById('admin-news-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             
@@ -76,30 +107,30 @@
             if (!imageFile) return;
 
             submitBtn.disabled = true;
-            submitBtn.innerText = "កំពុងចុះផ្សាយ...";
+            submitBtn.innerText = "កំពុងរៀបចំរូបភាព...";
 
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                const image = e.target.result;
-                try {
-                    await addDoc(collection(db, "news"), {
-                        title: title,
-                        desc: desc,
-                        image: image,
-                        date: date,
-                        timestamp: serverTimestamp()
-                    });
+            try {
+                // បង្រួមរូបភាពមុននឹងបញ្ជូន
+                const compressedImage = await compressImage(imageFile);
+                
+                submitBtn.innerText = "កំពុងចុះផ្សាយ...";
 
-                    alert("ព័ត៌មានត្រូវបានចុះផ្សាយដោយជោគជ័យ និងបង្ហាញជូនអ្នកអានទាំងអស់គ្នា!");
-                    document.getElementById('admin-news-form').reset();
-                } catch (error) {
-                    alert("មានបញ្ហា៖ " + error.message);
-                } finally {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "ចុះផ្សាយព័ត៌មានឥឡូវនេះ";
-                }
-            };
-            reader.readAsDataURL(imageFile);
+                await addDoc(collection(db, "news"), {
+                    title: title,
+                    desc: desc,
+                    image: compressedImage,
+                    date: date,
+                    timestamp: serverTimestamp()
+                });
+
+                alert("ព័ត៌មានត្រូវបានចុះផ្សាយដោយជោគជ័យ!");
+                document.getElementById('admin-news-form').reset();
+            } catch (error) {
+                alert("មានបញ្ហា៖ " + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "ចុះផ្សាយព័ត៌មានឥឡូវនេះ";
+            }
         });
     </script>
 </body>
