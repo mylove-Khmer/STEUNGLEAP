@@ -22,10 +22,11 @@
     </header>
 
     <!-- Admin Form Content -->
-    <main class="container mx-auto px-4 py-8 max-w-xl">
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
-            <h2 class="text-lg font-bold mb-4 text-yellow-300">បញ្ចូលព័ត៌មានថ្មី</h2>
+    <main class="container mx-auto px-4 py-8 max-w-3xl">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700 mb-8">
+            <h2 id="form-title" class="text-lg font-bold mb-4 text-yellow-300">បញ្ចូលព័ត៌មានថ្មី</h2>
             <form id="admin-news-form" class="space-y-4">
+                <input type="hidden" id="edit-id">
                 
                 <div>
                     <label class="block text-xs text-gray-300 mb-1">ឈ្មោះព័ត៌មាន (ចំណងជើង)</label>
@@ -33,8 +34,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs text-gray-300 mb-1">ជ្រើសរើសរូបភាពព័ត៌មាន (អាចដាក់បាន)</label>
-                    <input type="file" id="a-image" accept="image/*" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-yellow-500 file:text-gray-900 hover:file:bg-yellow-400">
+                    <label class="block text-xs text-gray-300 mb-1">ជ្រើសរើសរូបភាពព័ត៌មាន (អាចជ្រើសរើសច្រើនសន្លឹក)</label>
+                    <input type="file" id="a-image" accept="image/*" multiple class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-yellow-500 file:text-gray-900 hover:file:bg-yellow-400">
                 </div>
 
                 <div>
@@ -42,15 +43,25 @@
                     <textarea id="a-desc" rows="5" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="សរសេរអក្សរព័ត៌មាន ឬខ្លឹមសារនៅទីនេះ..."></textarea>
                 </div>
 
-                <button type="submit" id="submit-btn" class="w-full bg-yellow-500 text-gray-900 font-bold py-2 rounded text-sm hover:bg-yellow-400 transition">ចុះផ្សាយព័ត៌មានឥឡូវនេះ</button>
+                <div class="flex space-x-3">
+                    <button type="submit" id="submit-btn" class="flex-grow bg-yellow-500 text-gray-900 font-bold py-2 rounded text-sm hover:bg-yellow-400 transition">ចុះផ្សាយព័ត៌មានឥឡូវនេះ</button>
+                    <button type="button" id="cancel-btn" onclick="resetForm()" class="hidden bg-gray-600 text-white px-4 py-2 rounded text-sm hover:bg-gray-500 transition">បោះបង់</button>
+                </div>
             </form>
+        </div>
+
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
+            <h2 class="text-lg font-bold mb-4 text-yellow-300">បញ្ជីព័ត៌មានទាំងអស់</h2>
+            <div id="admin-news-list" class="space-y-4">
+                <p class="text-gray-400 text-sm">កំពុងទាញយកទិន្នន័យ...</p>
+            </div>
         </div>
     </main>
 
     <!-- Firebase SDK & Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCj8Fz-LyCydPLVz2F2z80NyyA-1JJnoIA",
@@ -64,7 +75,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ฟังก์ชันបង្រួមទំហំរូបភាព (Resize Image) ដើម្បីកុំឱ្យធំពេក
         function compressImage(file, maxWidth = 800, quality = 0.7) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -76,17 +86,14 @@
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-
                         if (width > maxWidth) {
                             height = Math.round((height * maxWidth) / width);
                             width = maxWidth;
                         }
-
                         canvas.width = width;
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-
                         resolve(canvas.toDataURL('image/jpeg', quality));
                     };
                     img.onerror = error => reject(error);
@@ -95,43 +102,135 @@
             });
         }
 
+        async function fetchAdminNews() {
+            const listContainer = document.getElementById('admin-news-list');
+            try {
+                const q = query(collection(db, "news"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    listContainer.innerHTML = '<p class="text-gray-400 text-sm">មិនទាន់មានព័ត៌មាននៅឡើយទេ...</p>';
+                    return;
+                }
+
+                listContainer.innerHTML = '';
+                querySnapshot.forEach((document) => {
+                    const item = document.data();
+                    const id = document.id;
+                    const firstImage = Array.isArray(item.images) ? item.images[0] : item.image;
+
+                    listContainer.innerHTML += `
+                        <div class="bg-gray-700 p-4 rounded flex justify-between items-center border border-gray-600">
+                            <div class="flex items-center space-x-3 overflow-hidden">
+                                <img src="${firstImage}" class="w-16 h-16 object-cover rounded flex-shrink-0">
+                                <div class="truncate">
+                                    <h4 class="font-bold text-sm text-yellow-200 truncate">${item.title}</h4>
+                                    <p class="text-xs text-gray-300 line-clamp-1">${item.desc}</p>
+                                    <span class="text-[10px] text-gray-400">${item.date}</span>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2 flex-shrink-0 ml-4">
+                                <button onclick="editNews('${id}', '${escape(item.title)}', '${escape(item.desc)}')" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-500">កែប្រែ</button>
+                                <button onclick="deleteNews('${id}')" class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-500">លុប</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                listContainer.innerHTML = '<p class="text-red-400 text-sm">មានបញ្ហាក្នុងការទាញយកទិន្នន័យ។</p>';
+            }
+        }
+
         document.getElementById('admin-news-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             
+            const editId = document.getElementById('edit-id').value;
             const title = document.getElementById('a-title').value;
             const desc = document.getElementById('a-desc').value;
-            const date = '៨ វិច្ឆិកា ២០២៦';
-            const imageFile = document.getElementById('a-image').files[0];
+            const imageFiles = document.getElementById('a-image').files;
             const submitBtn = document.getElementById('submit-btn');
 
-            if (!imageFile) return;
-
             submitBtn.disabled = true;
-            submitBtn.innerText = "កំពុងរៀបចំរូបភាព...";
+            submitBtn.innerText = "កំពុងដំណើរការ...";
 
             try {
-                // បង្រួមរូបភាពមុននឹងបញ្ជូន
-                const compressedImage = await compressImage(imageFile);
-                
-                submitBtn.innerText = "កំពុងចុះផ្សាយ...";
+                let imageUrls = submitBtn.dataset.currentImages ? JSON.parse(submitBtn.dataset.currentImages) : [];
 
-                await addDoc(collection(db, "news"), {
-                    title: title,
-                    desc: desc,
-                    image: compressedImage,
-                    date: date,
-                    timestamp: serverTimestamp()
-                });
+                if (imageFiles.length > 0) {
+                    imageUrls = [];
+                    for (let i = 0; i < imageFiles.length; i++) {
+                        const compressed = await compressImage(imageFiles[i]);
+                        imageUrls.push(compressed);
+                    }
+                }
 
-                alert("ព័ត៌មានត្រូវបានចុះផ្សាយដោយជោគជ័យ!");
-                document.getElementById('admin-news-form').reset();
+                if (editId) {
+                    await updateDoc(doc(db, "news", editId), {
+                        title: title,
+                        desc: desc,
+                        images: imageUrls,
+                        image: imageUrls[0] // សម្រាប់backward compatibility
+                    });
+                    alert("បានកែប្រែព័ត៌មានដោយជោគជ័យ!");
+                } else {
+                    if (imageUrls.length === 0) {
+                        alert("សូមជ្រើសរើសរូបភាពយ៉ាងហោចណាស់មួយ!");
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "ចុះផ្សាយព័ត៌មានឥឡូវនេះ";
+                        return;
+                    }
+                    await addDoc(collection(db, "news"), {
+                        title: title,
+                        desc: desc,
+                        images: imageUrls,
+                        image: imageUrls[0],
+                        date: '៨ វិច្ឆិកា ២០២៦',
+                        timestamp: serverTimestamp()
+                    });
+                    alert("បានចុះផ្សាយព័ត៌មានដោយជោគជ័យ!");
+                }
+
+                resetForm();
+                fetchAdminNews();
             } catch (error) {
                 alert("មានបញ្ហា៖ " + error.message);
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerText = "ចុះផ្សាយព័ត៌មានឥឡូវនេះ";
             }
         });
+
+        window.editNews = function(id, title, desc) {
+            document.getElementById('edit-id').value = id;
+            document.getElementById('a-title').value = unescape(title);
+            document.getElementById('a-desc').value = unescape(desc);
+            
+            document.getElementById('form-title').innerText = "កែប្រែព័ត៌មាន";
+            document.getElementById('submit-btn').innerText = "រក្សាទុកការកែប្រែ";
+            document.getElementById('cancel-btn').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.deleteNews = async function(id) {
+            if (confirm("តើអ្នកពិតជាចង់លុបព័ត៌មាននេះមែនទេ?")) {
+                try {
+                    await deleteDoc(doc(db, "news", id));
+                    alert("បានលុបដោយជោគជ័យ!");
+                    fetchAdminNews();
+                } catch (error) {
+                    alert("មានបញ្ហាក្នុងការលុប៖ " + error.message);
+                }
+            }
+        }
+
+        window.resetForm = function() {
+            document.getElementById('admin-news-form').reset();
+            document.getElementById('edit-id').value = "";
+            document.getElementById('form-title').innerText = "បញ្ចូលព័ត៌មានថ្មី";
+            document.getElementById('submit-btn').innerText = "ចុះផ្សាយព័ត៌មានឥឡូវនេះ";
+            document.getElementById('cancel-btn').classList.add('hidden');
+        }
+
+        fetchAdminNews();
     </script>
 </body>
 </html>
