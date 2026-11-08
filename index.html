@@ -40,14 +40,7 @@
     <!-- Navigation Menu -->
     <nav class="bg-red-700 text-white shadow">
         <div class="container mx-auto px-4 flex space-x-6 overflow-x-auto py-3 text-sm font-medium">
-            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">ទំព័រដើម</a>
-            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">នយោបាយ</a>
-            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">សង្គម</a>
-            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">សេដ្ឋកិច្ច</a>
-            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">បច្ចេកវិទ្យា</a>
-            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">អន្តរជាតិ</a>
-            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">កីឡា</a>
-            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">កម្សាន្ត</a>
+            <a href="index.html" class="hover:text-yellow-300 whitespace-nowrap">ទំព័រដើម</a>
         </div>
     </nav>
 
@@ -65,30 +58,56 @@
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('visitor-news-container');
-            const newsList = JSON.parse(localStorage.getItem('steungleap_news')) || [];
-            
-            if(newsList.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 col-span-4 text-center py-8">មិនទាន់មានព័ត៌មានថ្មីៗនៅឡើយទេ...</p>';
-                return;
-            }
+    <!-- Firebase SDK & Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-            container.innerHTML = '';
-            newsList.forEach(item => {
-                container.innerHTML += `
-                    <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col border border-gray-200">
-                        <img src="${item.image}" alt="News" class="w-full h-40 object-cover">
-                        <div class="p-4 flex flex-col flex-grow">
-                            <h3 class="font-bold text-base mb-2 hover:text-red-600 cursor-pointer">${item.title}</h3>
-                            <p class="text-gray-600 text-xs mb-4 flex-grow">${item.desc}</p>
-                            <span class="text-xs text-gray-400">${item.date}</span>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCj8Fz-LyCydPLVz2F2z80NyyA-1JJnoIA",
+            authDomain: "steungleap-123af.firebaseapp.com",
+            projectId: "steungleap-123af",
+            storageBucket: "steungleap-123af.firebasestorage.app",
+            messagingSenderId: "97711978773",
+            appId: "1:97711978773:web:577b7b53ff44836f8ed1ic"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadNews() {
+            const container = document.getElementById('visitor-news-container');
+            container.innerHTML = '<p class="text-gray-500 col-span-4 text-center py-8">កំពុងទាញយកព័ត៌មាន...</p>';
+
+            try {
+                const q = query(collection(db, "news"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<p class="text-gray-500 col-span-4 text-center py-8">មិនទាន់មានព័ត៌មានថ្មីៗនៅឡើយទេ...</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const item = doc.data();
+                    container.innerHTML += `
+                        <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col border border-gray-200">
+                            <img src="${item.image}" alt="News" class="w-full h-40 object-cover">
+                            <div class="p-4 flex flex-col flex-grow">
+                                <h3 class="font-bold text-base mb-2 hover:text-red-600 cursor-pointer">${item.title}</h3>
+                                <p class="text-gray-600 text-xs mb-4 flex-grow">${item.desc}</p>
+                                <span class="text-xs text-gray-400">${item.date}</span>
+                            </div>
                         </div>
-                    </div>
-                `;
-            });
-        });
+                    `;
+                });
+            } catch (error) {
+                container.innerHTML = '<p class="text-red-500 col-span-4 text-center py-8">មានបញ្ហាក្នុងការភ្ជាប់ទិន្នន័យ សូមត្រួតពិនិត្យ Firestore Database Rules។</p>';
+            }
+        }
+
+        loadNews();
     </script>
 </body>
 </html>
