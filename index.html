@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEUNGLEAP - វេបសាយព័ត៌មានទាន់ហេតុការណ៍</title>
+    <!-- Google Font & Tailwind CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Kantumruy Pro', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Top Bar -->
+    <div class="bg-gray-900 text-gray-300 text-sm py-2">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div id="current-date" class="font-light">ថ្ងៃអាទិត្យ ទី៨ ខែវិច្ឆិកា ឆ្នាំ២០២៦</div>
+            <div class="flex space-x-4">
+                <a href="#" class="hover:text-white">អំពីយើង</a>
+                <a href="#" class="hover:text-white">ទំនាក់ទំនង</a>
+                <a href="#" class="hover:text-white">ផ្សាយពាណិជ្ជកម្ម</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header & Logo -->
+    <header class="bg-white shadow-sm py-4 sticky top-0 z-50">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <a href="#" class="text-2xl md:text-3xl font-black text-red-600 tracking-wider">STEUNG<span class="text-gray-800">LEAP</span></a>
+            <div class="hidden md:flex items-center space-x-2">
+                <input type="text" placeholder="ស្វែងរកព័ត៌មាន..." class="border rounded-l px-4 py-2 text-sm focus:outline-none focus:border-red-500">
+                <button class="bg-red-600 text-white px-4 py-2 rounded-r text-sm hover:bg-red-700">ស្វែងរក</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="bg-red-700 text-white shadow">
+        <div class="container mx-auto px-4 flex space-x-6 overflow-x-auto py-3 text-sm font-medium">
+            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">ទំព័រដើម</a>
+            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">នយោបាយ</a>
+            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">សង្គម</a>
+            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">សេដ្ឋកិច្ច</a>
+            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">បច្ចេកវិទ្យា</a>
+            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">អន្តរជាតិ</a>
+            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">កីឡា</a>
+            <a href="#" class="hover:text-yellow-300 whitespace-nowrap">កម្សាន្ត</a>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-4 py-6">
+        
+        <!-- Breaking News / Featured Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Big Featured News -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=800&q=80" alt="News" class="w-full h-80 object-cover">
+                <div class="p-6">
+                    <span class="bg-red-100 text-red-600 text-xs font-semibold px-2.5 py-1 rounded">អត្ថបទលេចធ្លោ</span>
+                    <h1 class="text-2xl font-bold mt-3 mb-2 hover:text-red-600 cursor-pointer">
+                        រដ្ឋាភិបាលប្រកាសដាក់ឱ្យដំណើរការជាផ្លូវការនូវគម្រោងអភិវឌ្ឍន៍បច្ចេកវិទ្យាថ្មីឆ្នាំ២០២៦
+                    </h1>
+                    <p class="text-gray-600 text-sm mb-4">
+                        រាជរដ្ឋាភិបាលកម្ពុជា បានបង្ហាញពីផែនការយុទ្ធសាស្ត្រថ្មីក្នុងការជំរុញកំណើនសេដ្ឋកិច្ចឌីជីថល ដោយផ្តោតសំខាន់លើការបណ្តុះបណ្តាលធនធានមនុស្ស និងការគាំទ្រដល់វិស័យអាជីវកម្មចាប់ផ្តើមថ្មី (Startups)...
+                    </p>
+                    <div class="flex items-center text-xs text-gray-500 justify-between">
+                        <span>ដោយ៖ STEUNGLEAP News</span>
+                        <span>៨ វិច្ឆិកា ២០២៦</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Sub-News -->
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-lg shadow flex space-x-4 items-center">
+                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=200&q=80" alt="Tech" class="w-24 h-20 object-cover rounded">
+                    <div>
+                        <span class="text-xs text-red-600 font-semibold">បច្ចេកវិទ្យា</span>
+                        <h3 class="font-bold text-sm hover:text-red-600 cursor-pointer line-clamp-2">ការរីកចម្រើននៃបញ្ញាសិប្បនិម្មិត (AI) ក្នុងវិស័យអប់រំ</h3>
+                        <span class="text-xs text-gray-400">២ ម៉ោងមុន</span>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow flex space-x-4 items-center">
+                    <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=200&q=80" alt="Sport" class="w-24 h-20 object-cover rounded">
+                    <div>
+                        <span class="text-xs text-red-600 font-semibold">កីឡា</span>
+                        <h3 class="font-bold text-sm hover:text-red-600 cursor-pointer line-clamp-2">ក្រុមកីឡាបាល់ទាត់ជម្រើសជាតិត្រៀមខ្លួនប្រកួតជុំបន្ត</h3>
+                        <span class="text-xs text-gray-400">៤ ម៉ោងមុន</span>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow flex space-x-4 items-center">
+                    <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=200&q=80" alt="Business" class="w-24 h-20 object-cover rounded">
+                    <div>
+                        <span class="text-xs text-red-600 font-semibold">សេដ្ឋកិច្ច</span>
+                        <h3 class="font-bold text-sm hover:text-red-600 cursor-pointer line-clamp-2">ទីផ្សារអចលនទ្រព្យបង្ហាញសញ្ញាវិជ្ជមានឡើងវិញ</h3>
+                        <span class="text-xs text-gray-400">៥ ម៉ោងមុន</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest News Grid -->
+        <h2 class="text-xl font-bold mb-4 border-l-4 border-red-600 pl-3">ព័ត៌មានថ្មីៗ</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=500&q=80" alt="News" class="w-full h-40 object-cover">
+                <div class="p-4 flex flex-col flex-grow">
+                    <span class="text-xs text-red-600 font-semibold mb-1">អន្តរជាតិ</span>
+                    <h3 class="font-bold text-base mb-2 hover:text-red-600 cursor-pointer">កំពូលមេដឹកនាំពិភពលោកជួបប្រជុំគ្នាស្តីពីបរិស្ថាន</h3>
+                    <p class="text-gray-600 text-xs mb-4 flex-grow">កិច្ចប្រជុំកំពូលប្រចាំឆ្នាំបានចាប់ផ្តើមជាមួយការប្តេជ្ញាចិត្តថ្មី...</p>
+                    <span class="text-xs text-gray-400">៦ វិច្ឆិកា ២០២៦</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=500&q=80" alt="News" class="w-full h-40 object-cover">
+                <div class="p-4 flex flex-col flex-grow">
+                    <span class="text-xs text-red-600 font-semibold mb-1">ទេសចរណ៍</span>
+                    <h3 class="font-bold text-base mb-2 hover:text-red-600 cursor-pointer">តំបន់ទេសចរណ៍ធម្មជាតិថ្មីត្រូវបានរកឃើញនៅភាគពាយព្យ</h3>
+                    <p class="text-gray-600 text-xs mb-4 flex-grow">ទីកន្លែងដ៏ស្រស់ស្អាតនិងធម្មជាតិបរិសុទ្ធទាក់ទាញភ្ញៀវទេសចរ...</p>
+                    <span class="text-xs text-gray-400">៥ វិច្ឆិកា ២០២៦</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+                <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=500&q=80" alt="News" class="w-full h-40 object-cover">
+                <div class="p-4 flex flex-col flex-grow">
+                    <span class="text-xs text-red-600 font-semibold mb-1">សុខភាព</span>
+                    <h3 class="font-bold text-base mb-2 hover:text-red-600 cursor-pointer">គន្លឹះថែទាំសុខភាពរាងកាយក្នុងរដូវប្រាំង</h3>
+                    <p class="text-gray-600 text-xs mb-4 flex-grow">វេជ្ជបណ្ឌិតបានណែនាំពីវិធីសាស្ត្រការពារសុខភាពងាយៗ...</p>
+                    <span class="text-xs text-gray-400">៥ វិច្ឆិកា ២០២៦</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+                <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=500&q=80" alt="News" class="w-full h-40 object-cover">
+                <div class="p-4 flex flex-col flex-grow">
+                    <span class="text-xs text-red-600 font-semibold mb-1">ជីវិតនិងការងារ</span>
+                    <h3 class="font-bold text-base mb-2 hover:text-red-600 cursor-pointer">វិធីសាស្ត្រក្នុងការគ្រប់គ្រងពេលវេលាឱ្យមានប្រសិទ្ធភាព</h3>
+                    <p class="text-gray-600 text-xs mb-4 flex-grow">ការតម្រៀបការងារអាទិភាពអាចជួយកាត់បន្ថយស្ត្រេសក្នុងពេលធ្វើការ...</p>
+                    <span class="text-xs text-gray-400">៤ វិច្ឆិកា ២០២៦</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 mt-12 py-8">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p>&copy; ២០២៦ STEUNGLEAP។ រក្សាសិទ្ធិគ្រប់យ៉ាង។</p>
+            <p class="mt-2 text-xs">រចនាឡើងសម្រាប់បំពេញតម្រូវការព័ត៌មានទាន់ហេតុការណ៍របស់អ្នក។</p>
+        </div>
+    </footer>
+
+</body>
+</html>
