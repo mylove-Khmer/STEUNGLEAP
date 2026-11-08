@@ -25,56 +25,82 @@
     <main class="container mx-auto px-4 py-8 max-w-xl">
         <div class="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
             <h2 class="text-lg font-bold mb-4 text-yellow-300">បញ្ចូលព័ត៌មានថ្មី</h2>
-            <form id="admin-news-form" onsubmit="publishNews(event)" class="space-y-4">
+            <form id="admin-news-form" class="space-y-4">
                 
-                <!-- ឈ្មោះព័ត៌មាន (ចំណងជើង) -->
                 <div>
                     <label class="block text-xs text-gray-300 mb-1">ឈ្មោះព័ត៌មាន (ចំណងជើង)</label>
                     <input type="text" id="a-title" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="វាយបញ្ចូលឈ្មោះព័ត៌មាន...">
                 </div>
 
-                <!-- ជ្រើសរើសរូបភាពពីម៉ាស៊ីន -->
                 <div>
                     <label class="block text-xs text-gray-300 mb-1">ជ្រើសរើសរូបភាពព័ត៌មាន</label>
                     <input type="file" id="a-image" accept="image/*" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-yellow-500 file:text-gray-900 hover:file:bg-yellow-400">
                 </div>
 
-                <!-- អក្សរព័ត៌មាន (ខ្លឹមសារលម្អិត) -->
                 <div>
                     <label class="block text-xs text-gray-300 mb-1">អក្សរព័ត៌មាន (ខ្លឹមសារ)</label>
                     <textarea id="a-desc" rows="5" required class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-yellow-400" placeholder="សរសេរអក្សរព័ត៌មាន ឬខ្លឹមសារនៅទីនេះ..."></textarea>
                 </div>
 
-                <button type="submit" class="w-full bg-yellow-500 text-gray-900 font-bold py-2 rounded text-sm hover:bg-yellow-400 transition">ចុះផ្សាយព័ត៌មានឥឡូវនេះ</button>
+                <button type="submit" id="submit-btn" class="w-full bg-yellow-500 text-gray-900 font-bold py-2 rounded text-sm hover:bg-yellow-400 transition">ចុះផ្សាយព័ត៌មានឥឡូវនេះ</button>
             </form>
         </div>
     </main>
 
-    <script>
-        function publishNews(event) {
+    <!-- Firebase SDK & Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCj8Fz-LyCydPLVz2F2z80NyyA-1JJnoIA",
+            authDomain: "steungleap-123af.firebaseapp.com",
+            projectId: "steungleap-123af",
+            storageBucket: "steungleap-123af.firebasestorage.app",
+            messagingSenderId: "97711978773",
+            appId: "1:97711978773:web:577b7b53ff44836f8ed1ic"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.getElementById('admin-news-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             
             const title = document.getElementById('a-title').value;
             const desc = document.getElementById('a-desc').value;
             const date = '៨ វិច្ឆិកា ២០២៦';
             const imageFile = document.getElementById('a-image').files[0];
+            const submitBtn = document.getElementById('submit-btn');
 
-            if (imageFile) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const image = e.target.result;
-                    const newItem = { title, image, desc, date };
+            if (!imageFile) return;
 
-                    let newsList = JSON.parse(localStorage.getItem('steungleap_news')) || [];
-                    newsList.unshift(newItem);
-                    localStorage.setItem('steungleap_news', JSON.stringify(newsList));
+            submitBtn.disabled = true;
+            submitBtn.innerText = "កំពុងចុះផ្សាយ...";
 
-                    alert("ព័ត៌មានត្រូវបានចុះផ្សាយដោយជោគជ័យ!");
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const image = e.target.result;
+                try {
+                    await addDoc(collection(db, "news"), {
+                        title: title,
+                        desc: desc,
+                        image: image,
+                        date: date,
+                        timestamp: serverTimestamp()
+                    });
+
+                    alert("ព័ត៌មានត្រូវបានចុះផ្សាយដោយជោគជ័យ និងបង្ហាញជូនអ្នកអានទាំងអស់គ្នា!");
                     document.getElementById('admin-news-form').reset();
-                };
-                reader.readAsDataURL(imageFile);
-            }
-        }
+                } catch (error) {
+                    alert("មានបញ្ហា៖ " + error.message);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "ចុះផ្សាយព័ត៌មានឥឡូវនេះ";
+                }
+            };
+            reader.readAsDataURL(imageFile);
+        });
     </script>
 </body>
 </html>
